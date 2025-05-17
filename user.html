@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
   <header class="header">
     <div class="container d-flex justify-content-between align-items-center">
@@ -123,58 +125,58 @@
     }
 
     function renderChart(data) {
-  const labels = [];
-  const countMap = {};
+      const labels = [];
+      const countMap = {};
 
-  data.forEach(record => {
-    const date = new Date(record.time);
-    const label = date.toLocaleDateString("ms-MY", { weekday: "short" });
-    countMap[label] = (countMap[label] || 0) + 1;
-  });
+      data.forEach(record => {
+        const date = new Date(record.time);
+        const label = date.toLocaleDateString("ms-MY", { weekday: "short" });
+        countMap[label] = (countMap[label] || 0) + 1;
+      });
 
-  const chartLabels = ["Isn", "Sel", "Rab", "Kha", "Jum", "Sab", "Ahd"];
-  const chartData = chartLabels.map(day => countMap[day] || 0);
+      const chartLabels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+      const chartData = chartLabels.map(day => countMap[day] || 0);
 
-  const ctx = document.getElementById("attendanceChart").getContext("2d");
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: chartLabels,
-      datasets: [{
-        label: "Jumlah Kehadiran",
-        data: chartData,
-        backgroundColor: "#0d6efd"
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          display: false
-        }
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: "#ffffff"  // Teks bawah putih
-          },
-          grid: {
-            color: "rgba(255,255,255,0.1)"  // Garisan halus
-          }
+      const ctx = document.getElementById("attendanceChart").getContext("2d");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: chartLabels,
+          datasets: [{
+            label: "Jumlah Kehadiran",
+            data: chartData,
+            backgroundColor: "#0d6efd"
+          }]
         },
-        y: {
-          beginAtZero: true,
-          ticks: {
-            color: "#ffffff"  // Teks kiri putih
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false
+            }
           },
-          grid: {
-            color: "rgba(255,255,255,0.1)"  // Garisan halus
+          scales: {
+            x: {
+              ticks: {
+                color: "#ffffff"  // Teks bawah putih
+              },
+              grid: {
+                color: "rgba(255,255,255,0.1)"  // Garisan halus
+              }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: "#ffffff"  // Teks kiri putih
+              },
+              grid: {
+                color: "rgba(255,255,255,0.1)"  // Garisan halus
+              }
+            }
           }
         }
-      }
+      });
     }
-  });
-}
 
 
     document.getElementById("exportCSV").addEventListener("click", () => {
@@ -193,4 +195,5 @@
     });
   </script>
 </body>
+
 </html>
