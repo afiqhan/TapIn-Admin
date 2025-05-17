@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rekod Kehadiran Pekerja</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div>
+        <h2 id="userName">Nama Pekerja</h2>
+        <p class="mb-0">Rekod Kehadiran Individu</p>
+      </div>
+      <div>
+        <a href="dashboard.html" class="btn btn-outline-light">← Kembali ke Senarai</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container py-4">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <input type="date" id="filterDate" class="form-control" placeholder="Tapis ikut tarikh...">
+      </div>
+      <div class="col-md-6 text-end">
+        <button class="btn btn-success" id="exportCSV">Export CSV</button>
+      </div>
+    </div>
+
+    <div class="table-responsive mb-5">
+      <table class="table table-striped table-bordered">
+        <thead class="table-dark text-center">
+          <tr>
+            <th>Tarikh & Masa</th>
+            <th>Jenis</th>
+            <th>Status</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Waktu Bekerja</th>
+            <th>Jarak</th>
+            <th>Sebab</th>
+          </tr>
+        </thead>
+        <tbody id="attendanceTable"></tbody>
+      </table>
+    </div>
+
+    <div>
+      <h5 class="mb-3 text-white">Statistik Kehadiran Mingguan</h5>
+
+      <canvas id="attendanceChart" height="100"></canvas>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyChNjBJcN5Ig5pXKpitXOUJxzVIn7gXAVA",
+      authDomain: "tapin-e798d.firebaseapp.com",
+      projectId: "tapin-e798d",
+      storageBucket: "tapin-e798d.appspot.com",
+      messagingSenderId: "733701309308",
+      appId: "1:733701309308:web:1b7896c9c090959e221af9",
+      databaseURL: "https://tapin-e798d-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    const uid = new URLSearchParams(window.location.search).get("id");
+    const userNameDisplay = document.getElementById("userName");
+    const tableBody = document.getElementById("attendanceTable");
+    const filterDate = document.getElementById("filterDate");
+    let attendanceRecords = [];
+
+    auth.onAuthStateChanged((user) => {
+      if (!user || user.email !== "admintapin@gmail.com") {
+        window.location.href = "login.html";
+      } else {
+        loadUserName();
+        loadAttendanceRecords();
+      }
+    });
+
+    function loadUserName() {
+      db.ref("users/" + uid).once("value", (snapshot) => {
+        const data = snapshot.val();
+        userNameDisplay.textContent = data?.name || "Nama Tidak Dijumpai";
+      });
+    }
+
+    function loadAttendanceRecords() {
+      db.ref("attendance/" + uid).once("value", (snapshot) => {
+        attendanceRecords = Object.values(snapshot.val() || {});
+        renderTable(attendanceRecords);
+        renderChart(attendanceRecords);
+      });
+    }
+
+    function renderTable(data) {
+      tableBody.innerHTML = "";
+      data.forEach((record) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${record.time || "-"}</td>
+          <td>${record.type || "-"}</td>
+          <td>${record.status || "-"}</td>
+          <td>${record.latitude || "-"}</td>
+          <td>${record.longitude || "-"}</td>
+          <td>${record.working_hours || "-"}</td>
+          <td>${record.distance || "-"}</td>
+          <td>${record.remark || "-"}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function renderChart(data) {
+  const labels = [];
+  const countMap = {};
+
+  data.forEach(record => {
+    const date = new Date(record.time);
+    const label = date.toLocaleDateString("ms-MY", { weekday: "short" });
+    countMap[label] = (countMap[label] || 0) + 1;
+  });
+
+  const chartLabels = ["Isn", "Sel", "Rab", "Kha", "Jum", "Sab", "Ahd"];
+  const chartData = chartLabels.map(day => countMap[day] || 0);
+
+  const ctx = document.getElementById("attendanceChart").getContext("2d");
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: chartLabels,
+      datasets: [{
+        label: "Jumlah Kehadiran",
+        data: chartData,
+        backgroundColor: "#0d6efd"
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: "#ffffff"  // Teks bawah putih
+          },
+          grid: {
+            color: "rgba(255,255,255,0.1)"  // Garisan halus
+          }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: "#ffffff"  // Teks kiri putih
+          },
+          grid: {
+            color: "rgba(255,255,255,0.1)"  // Garisan halus
+          }
+        }
+      }
+    }
+  });
+}
+
+
+    document.getElementById("exportCSV").addEventListener("click", () => {
+      let csv = "Tarikh & Masa,Jenis,Status,Latitude,Longitude,Waktu Bekerja,Jarak,Sebab\n";
+      document.querySelectorAll("#attendanceTable tr").forEach(row => {
+        const cells = Array.from(row.children).map(td => td.textContent);
+        csv += cells.join(",") + "\n";
+      });
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${userNameDisplay.textContent}_kehadiran.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>

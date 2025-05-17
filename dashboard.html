@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin TapIn Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <header class="header text-center py-4">
+    <h2 class="fw-bold mb-1">TapIn Admin Dashboard</h2>
+    <p class="mb-0">Panel Kawalan Kehadiran Pekerja</p>
+  </header>
+
+  <main class="container py-4">
+    <!-- Kad Ringkasan -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="card text-bg-primary">
+          <div class="card-body text-center">
+            <h5 class="card-title">Jumlah Pengguna</h5>
+            <p class="card-text fs-4" id="userCount">0</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-bg-success">
+          <div class="card-body text-center">
+            <h5 class="card-title">Jumlah Rekod</h5>
+            <p class="card-text fs-4" id="recordCount">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carian pengguna -->
+    <div class="input-group mb-4">
+      <input type="text" id="searchInput" class="form-control" placeholder="Cari nama pekerja...">
+    </div>
+
+    <!-- Kad Pengguna -->
+    <div class="row" id="userCardContainer">
+      <!-- Kad pengguna akan dijana melalui JS -->
+    </div>
+  </main>
+
+  <!-- Firebase + JS -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyChNjBJcN5Ig5pXKpitXOUJxzVIn7gXAVA",
+      authDomain: "tapin-e798d.firebaseapp.com",
+      projectId: "tapin-e798d",
+      storageBucket: "tapin-e798d.appspot.com",
+      messagingSenderId: "733701309308",
+      appId: "1:733701309308:web:1b7896c9c090959e221af9",
+      databaseURL: "https://tapin-e798d-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    const searchInput = document.getElementById("searchInput");
+    const userCardContainer = document.getElementById("userCardContainer");
+    const userCount = document.getElementById("userCount");
+    const recordCount = document.getElementById("recordCount");
+
+    auth.onAuthStateChanged(user => {
+      if (!user || user.email !== "admintapin@gmail.com") {
+        window.location.href = "login.html";
+      } else {
+        loadSummary();
+        loadUserCards();
+      }
+    });
+
+    function loadSummary() {
+      db.ref("users").once("value", snapshot => {
+        userCount.textContent = snapshot.numChildren();
+      });
+
+      db.ref("attendance").once("value", snapshot => {
+        let total = 0;
+        snapshot.forEach(child => {
+          total += child.numChildren();
+        });
+        recordCount.textContent = total;
+      });
+    }
+
+    function loadUserCards() {
+      db.ref("users").once("value", snapshot => {
+        const users = snapshot.val();
+        userCardContainer.innerHTML = "";
+
+        Object.entries(users).forEach(([uid, user]) => {
+          const col = document.createElement("div");
+          col.className = "col-md-3 mb-4 user-card";
+          col.innerHTML = `
+            <div class="card h-100 shadow-sm" style="cursor:pointer" onclick="window.location.href='user.html?id=${uid}'">
+              <div class="card-body text-center">
+                <h6 class="card-title">${user.name || "Tanpa Nama"}</h6>
+              </div>
+            </div>
+          `;
+          userCardContainer.appendChild(col);
+        });
+      });
+    }
+
+    searchInput.addEventListener("input", () => {
+      const keyword = searchInput.value.toLowerCase();
+      document.querySelectorAll(".user-card").forEach(card => {
+        const name = card.textContent.toLowerCase();
+        card.style.display = name.includes(keyword) ? "block" : "none";
+      });
+    });
+  </script>
+</body>
+</html>
