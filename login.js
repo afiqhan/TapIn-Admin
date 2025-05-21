@@ -12,30 +12,53 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-document.getElementById("loginForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-        const loaderOverlay = document.getElementById('loaderOverlay');
-      const errorMessage = document.getElementById('errorMessage');
+const loginForm = document.getElementById("loginForm");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const errorMessage = document.getElementById("errorMessage");
+const spinner = document.getElementById("loadingSpinner");
 
-       loaderOverlay.style.display = 'flex';
-      errorMessage.textContent = '';
+function showError(message) {
+    errorMessage.innerText = message;
+    errorMessage.classList.remove("d-none");
+}
+
+loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    errorMessage.classList.add("d-none");
+    spinner.style.display = "block";
 
     auth.signInWithEmailAndPassword(email, password)
-  .then((userCredential) => {
-      const user = userCredential.user;
-      if (user.email === "admintapin@gmail.com") {
-          window.location.href = "dashboard.html";
-      } else {
-          auth.signOut();
-          document.getElementById("errorMessage").innerText = "Akses hanya untuk admin.";
-      }
-  })
-  .catch((error) => {
-      document.getElementById("errorMessage").innerText = error.message;
-  });
+        .then((userCredential) => {
+            const user = userCredential.user;
+            console.log("✅ Login berjaya:", user.email);
 
+            // Semakan email admin
+            if (user.email.toLowerCase() === "admintapin@gmail.com") {
+                window.location.href = "dashboard.html";
+            } else {
+                auth.signOut();
+                showError("Akses hanya untuk admin.");
+            }
+        })
+        .catch((error) => {
+            console.error("❌ Login gagal:", error.code, error.message);
+
+            if (
+                error.code === "auth/invalid-login-credentials" ||
+                error.code === "auth/user-not-found" ||
+                error.code === "auth/wrong-password"
+            ) {
+                showError("Email atau kata laluan salah. Sila cuba lagi.");
+            } else {
+                showError("Ralat sistem: " + error.message);
+            }
+        })
+        .finally(() => {
+            spinner.style.display = "none";
+        });
 });
-
-
