@@ -16,20 +16,26 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
     e.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+        const loaderOverlay = document.getElementById('loaderOverlay');
+      const errorMessage = document.getElementById('errorMessage');
+
+       loaderOverlay.style.display = 'flex';
+      errorMessage.textContent = '';
 
     auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            if (user.email === "admintapin@gmail.com") {
-                window.location.href = "dashboard.html";
-            } else {
-                auth.signOut();
-                document.getElementById("errorMessage").innerText = "Akses hanya untuk admin.";
-            }
-        })
-        .catch((error) => {
-            document.getElementById("errorMessage").innerText = error.message;
-        });
+  .then((userCredential) => {
+      const user = userCredential.user;
+      if (user.email === "admintapin@gmail.com") {
+          window.location.href = "dashboard.html";
+      } else {
+          auth.signOut();
+          document.getElementById("errorMessage").innerText = "Akses hanya untuk admin.";
+      }
+  })
+  .catch((error) => {
+      document.getElementById("errorMessage").innerText = error.message;
+  });
+
 });
 
 
