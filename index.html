@@ -17,9 +17,6 @@
     <!-- Tajuk -->
     <h2 class="mb-4">TapIn Admin</h2>
 
-
-
-
     <!-- Borang Login -->
     <form id="loginForm">
       <div class="mb-3">
@@ -29,16 +26,13 @@
         <input type="password" class="form-control" id="password" placeholder="Password" required />
       </div>
       <button type="submit" class="btn btn-primary w-100">Login</button>
-      <div id="loadingSpinner" class="spinner-border text-primary mt-3" role="status" style="display: none;">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-
-      <div id="errorMessage" class="alert alert-danger mt-3 py-2 px-3 d-none" role="alert"></div>
-
-
+      <div class="d-flex justify-content-center mt-4">
+        <div id="loadingSpinner" class="spinner-border text-primary mt-3" role="status" style="display: none;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div id="errorMessage" class="alert alert-danger mt-3 py-2 px-3 d-none" role="alert"></div>
     </form>
   </div>
-
 
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>

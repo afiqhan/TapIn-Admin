@@ -62,7 +62,8 @@ body {
   animation: fadeIn 1s ease-in-out;
 }
 
-.table th, .table td {
+.table th,
+.table td {
   vertical-align: middle !important;
   font-size: 14px;
 }
@@ -89,18 +90,37 @@ body {
 
 /* Animasi */
 @keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 
@@ -109,29 +129,33 @@ body {
   width: 50px;
   aspect-ratio: 1;
   display: grid;
-  color: #0d6efd; /* Warna biru, boleh tukar ke oren: #ffaa00 */
-  background: radial-gradient(farthest-side, currentColor calc(100% - 6px),#0000 calc(100% - 5px) 0);
-  -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 13px),#000 calc(100% - 12px));
+  color: #0d6efd;
+  background: radial-gradient(farthest-side, currentColor calc(100% - 6px), #0000 calc(100% - 5px) 0);
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 13px), #000 calc(100% - 12px));
+  place-items: center;
   border-radius: 50%;
   animation: l19 2s infinite linear;
-  margin: 0 auto;
+  margin: 20px auto 0 auto;
 }
 
 .loader::before,
-.loader::after {    
+.loader::after {
   content: "";
   grid-area: 1/1;
   background:
     linear-gradient(currentColor 0 0) center,
     linear-gradient(currentColor 0 0) center;
-  background-size: 100% 10px,10px 100%;
+  background-size: 100% 10px, 10px 100%;
   background-repeat: no-repeat;
 }
 
 .loader::after {
-   transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
-@keyframes l19 { 
-  100% { transform: rotate(1turn); }
+@keyframes l19 {
+  100% {
+    transform: rotate(1turn);
+  }
 }
+

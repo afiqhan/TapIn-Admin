@@ -35,27 +35,27 @@ loginForm.addEventListener("submit", function (e) {
     auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            console.log("✅ Login berjaya:", user.email);
+            console.log("✅ Login Successful:", user.email);
 
             // Semakan email admin
             if (user.email.toLowerCase() === "admintapin@gmail.com") {
                 window.location.href = "dashboard.html";
             } else {
                 auth.signOut();
-                showError("Akses hanya untuk admin.");
+                showError("Access denied. Only admin can log in.");
             }
         })
         .catch((error) => {
-            console.error("❌ Login gagal:", error.code, error.message);
+            console.error("❌ Failed Login:", error.code, error.message);
 
             if (
                 error.code === "auth/invalid-login-credentials" ||
                 error.code === "auth/user-not-found" ||
                 error.code === "auth/wrong-password"
             ) {
-                showError("Email atau kata laluan salah. Sila cuba lagi.");
+                showError("Your email or password is incorrect.");
             } else {
-                showError("Ralat sistem: " + error.message);
+                showError("Error: " + error.message);
             }
         })
         .finally(() => {

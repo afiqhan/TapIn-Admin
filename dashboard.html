@@ -7,50 +7,114 @@
   <title>Admin TapIn Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #1f3c58, #245871);
+      color: #ffffff;
+    }
+    .card {
+      border: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    .card-title {
+      font-weight: bold;
+    }
+    .search-input {
+      border-radius: 10px;
+      padding: 15px;
+    }
+
+
+  </style>
 </head>
 
 <body>
-  <header class="header text-center py-4">
-    <h2 class="fw-bold mb-1">TapIn Admin Dashboard</h2>
-    <p class="mb-0">Panel Kawalan Kehadiran Pekerja</p>
-  </header>
+  <!-- Navbar with Sidebar Toggle -->
+  <nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand ms-2 d-flex align-items-center gap-2" href="dashboard.html">
+  <img src="img/tapin_logo.png" alt="TapIn Logo" width="40" height="40" class="rounded-circle">
+  
+</a>
 
-  <main class="container py-4">
-    <!-- Kad Ringkasan -->
-    <div class="row g-3 mb-4">
-      <div class="col-md-3">
-        <div class="card text-bg-primary">
-          <div class="card-body text-center">
-            <h5 class="card-title">Jumlah Pengguna</h5>
-            <p class="card-text fs-4" id="userCount">0</p>
+    </div>
+  </nav>
+
+
+  
+  <!-- Sidebar Offcanvas -->
+  <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="sidebar">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">Menu</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ul class="nav flex-column">
+        <li class="nav-item"><a href="dashboard.html" class="nav-link text-white"><i class="fa-solid fa-chart-line me-2"></i>Dashboard</a></li>
+        <li class="nav-item"><a href="users.html" class="nav-link text-white"><i class="fa-solid fa-users me-2"></i>Pengguna</a></li>
+        <li class="nav-item"><a href="attendance.html" class="nav-link text-white"><i class="fa-solid fa-calendar-check me-2"></i>Kehadiran</a></li>
+        <li class="nav-item"><a href="add-user.html" class="nav-link text-white"><i class="fa-solid fa-user-plus me-2"></i>Tambah Pekerja</a></li>
+        <li class="nav-item"><a href="profile.html" class="nav-link text-white"><i class="fa-solid fa-user-shield me-2"></i>Profil Admin</a></li>
+        <li class="nav-item"><a href="about.html" class="nav-link text-white"><i class="fa-solid fa-circle-info me-2"></i>Tentang</a></li>
+        <li class="nav-item"><a href="#" class="nav-link text-danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket me-2"></i>Log Keluar</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container-fluid" style="margin-top: 56px;">
+    <div class="p-4">
+      <header class="text-center py-4">
+        <h2 class="fw-bold mb-1">TapIn Admin Dashboard</h2>
+        <p class="mb-4 text-light">Panel Kawalan Kehadiran Pekerja</p>
+
+        <!-- Ringkasan Statistik -->
+        <div class="row g-3 mb-4 justify-content-center">
+          <div class="col-md-3">   <div class="card text-bg-primary">
+              <div class="card-body text-center">
+                <h5 class="card-title">Jumlah Pengguna</h5>
+                <p class="card-text fs-4" id="userCount">0</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card text-bg-success">
+              <div class="card-body text-center">
+                <h5 class="card-title">Jumlah Rekod</h5>
+                <p class="card-text fs-4" id="recordCount">0</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card text-bg-success">
-          <div class="card-body text-center">
-            <h5 class="card-title">Jumlah Rekod</h5>
-            <p class="card-text fs-4" id="recordCount">0</p>
-          </div>
+
+        <!-- Carian Pengguna -->
+        <div class="input-group mb-4">
+          <input type="text" id="searchInput" class="form-control search-input" placeholder="Cari nama pekerja...">
         </div>
-      </div>
-    </div>
 
-    <!-- Carian pengguna -->
-    <div class="input-group mb-4">
-      <input type="text" id="searchInput" class="form-control" placeholder="Cari nama pekerja...">
+        <!-- Senarai Kad Pengguna -->
+        <div class="row" id="userCardContainer">
+          <!-- Kad pengguna akan dijana melalui JavaScript -->
+        </div>
+      </header>
     </div>
+  </div>
 
-    <!-- Kad Pengguna -->
-    <div class="row" id="userCardContainer">
-      <!-- Kad pengguna akan dijana melalui JS -->
-    </div>
-  </main>
-
-  <!-- Firebase + JS -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- JS Skrip Firebase -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyChNjBJcN5Ig5pXKpitXOUJxzVIn7gXAVA",
@@ -73,7 +137,7 @@
 
     auth.onAuthStateChanged(user => {
       if (!user || user.email !== "admintapin@gmail.com") {
-        window.location.href = "login.html";
+        window.location.href = "index.html";
       } else {
         loadSummary();
         loadUserCards();
@@ -101,7 +165,7 @@
 
         Object.entries(users).forEach(([uid, user]) => {
           const col = document.createElement("div");
-          col.className = "col-md-3 mb-4 user-card";
+          col.className = "col-sm-6 col-md-4 col-lg-3 mb-4 user-card";
           col.innerHTML = `
             <div class="card h-100 shadow-sm" style="cursor:pointer" onclick="window.location.href='user.html?id=${uid}'">
               <div class="card-body text-center">
@@ -121,6 +185,12 @@
         card.style.display = name.includes(keyword) ? "block" : "none";
       });
     });
+
+    function logout() {
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
   </script>
 </body>
 
