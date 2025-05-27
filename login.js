@@ -12,24 +12,53 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-document.getElementById("loginForm").addEventListener("submit", function (e) {
+const loginForm = document.getElementById("loginForm");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const errorMessage = document.getElementById("errorMessage");
+const spinner = document.getElementById("loadingSpinner");
+
+function showError(message) {
+    errorMessage.innerText = message;
+    errorMessage.classList.remove("d-none");
+}
+
+loginForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    errorMessage.classList.add("d-none");
+    spinner.style.display = "block";
 
     auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            if (user.email === "admintapin@gmail.com") {
+            console.log("✅ Login Successful:", user.email);
+
+            // Semakan email admin
+            if (user.email.toLowerCase() === "admintapin@gmail.com") {
                 window.location.href = "dashboard.html";
             } else {
                 auth.signOut();
-                document.getElementById("errorMessage").innerText = "Akses hanya untuk admin.";
+                showError("Access denied. Only admin can log in.");
             }
         })
         .catch((error) => {
-            document.getElementById("errorMessage").innerText = error.message;
+            console.error("❌ Failed Login:", error.code, error.message);
+
+            if (
+                error.code === "auth/invalid-login-credentials" ||
+                error.code === "auth/user-not-found" ||
+                error.code === "auth/wrong-password"
+            ) {
+                showError("Your email or password is incorrect.");
+            } else {
+                showError("Error: " + error.message);
+            }
+        })
+        .finally(() => {
+            spinner.style.display = "none";
         });
 });
-
-
