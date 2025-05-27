@@ -13,58 +13,64 @@
       background: linear-gradient(to bottom right, #1f3c58, #245871);
       color: #ffffff;
     }
+
     .card {
       border: none;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
+
     .card-title {
       font-weight: bold;
     }
+
     .search-input {
       border-radius: 10px;
       padding: 15px;
     }
-
-
   </style>
 </head>
 
 <body>
   <!-- Navbar with Sidebar Toggle -->
-  <nav class="navbar navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-dark fixed-top custom-navbar">
     <div class="container-fluid">
-      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
+        aria-controls="sidebar">
         <span class="navbar-toggler-icon"></span>
       </button>
       <a class="navbar-brand ms-2 d-flex align-items-center gap-2" href="dashboard.html">
-  <img src="img/tapin_logo.png" alt="TapIn Logo" width="40" height="40" class="rounded-circle">
-  
-</a>
-
+        <img src="img/tapin_logo.png" alt="TapIn Logo" width="40" height="40" class="rounded-circle">
+      </a>
     </div>
   </nav>
 
-
-  
   <!-- Sidebar Offcanvas -->
-  <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="sidebar">
+<div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="sidebar">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title">Menu</h5>
       <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
       <ul class="nav flex-column">
-        <li class="nav-item"><a href="dashboard.html" class="nav-link text-white"><i class="fa-solid fa-chart-line me-2"></i>Dashboard</a></li>
-        <li class="nav-item"><a href="users.html" class="nav-link text-white"><i class="fa-solid fa-users me-2"></i>Pengguna</a></li>
-        <li class="nav-item"><a href="attendance.html" class="nav-link text-white"><i class="fa-solid fa-calendar-check me-2"></i>Kehadiran</a></li>
-        <li class="nav-item"><a href="add-user.html" class="nav-link text-white"><i class="fa-solid fa-user-plus me-2"></i>Tambah Pekerja</a></li>
-        <li class="nav-item"><a href="profile.html" class="nav-link text-white"><i class="fa-solid fa-user-shield me-2"></i>Profil Admin</a></li>
-        <li class="nav-item"><a href="about.html" class="nav-link text-white"><i class="fa-solid fa-circle-info me-2"></i>Tentang</a></li>
-        <li class="nav-item"><a href="#" class="nav-link text-danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket me-2"></i>Log Keluar</a></li>
+        <li class="nav-item"><a href="dashboard.html" class="nav-link text-white"><i
+              class="fa-solid fa-chart-line me-2"></i>Dashboard</a></li>
+        <li class="nav-item"><a href="users.html" class="nav-link text-white"><i
+              class="fa-solid fa-users me-2"></i>User</a></li>
+        <li class="nav-item"><a href="attendance.html" class="nav-link text-white"><i
+              class="fa-solid fa-calendar-check me-2"></i>Attendance Today</a></li>
+        <li class="nav-item"><a href="add-user.html" class="nav-link text-white"><i
+              class="fa-solid fa-user-plus me-2"></i>Add User</a></li>
+        <li class="nav-item"><a href="profile.html" class="nav-link text-white"><i
+              class="fa-solid fa-user-shield me-2"></i>Admin Profile</a></li>
+        <li class="nav-item"><a href="about.html" class="nav-link text-white"><i
+              class="fa-solid fa-circle-info me-2"></i>About</a></li>
+        <li class="nav-item"><a href="#" class="nav-link text-danger" onclick="logout()"><i
+              class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
       </ul>
     </div>
   </div>
@@ -74,13 +80,14 @@
     <div class="p-4">
       <header class="text-center py-4">
         <h2 class="fw-bold mb-1">TapIn Admin Dashboard</h2>
-        <p class="mb-4 text-light">Panel Kawalan Kehadiran Pekerja</p>
+        <p class="mb-4 text-light">Employee Attendance Management Panel</p>
 
         <!-- Ringkasan Statistik -->
         <div class="row g-3 mb-4 justify-content-center">
-          <div class="col-md-3">   <div class="card text-bg-primary">
+          <div class="col-md-3">
+            <div class="card text-bg-primary">
               <div class="card-body text-center">
-                <h5 class="card-title">Jumlah Pengguna</h5>
+                <h5 class="card-title">Number Of Users</h5>
                 <p class="card-text fs-4" id="userCount">0</p>
               </div>
             </div>
@@ -88,7 +95,7 @@
           <div class="col-md-3">
             <div class="card text-bg-success">
               <div class="card-body text-center">
-                <h5 class="card-title">Jumlah Rekod</h5>
+                <h5 class="card-title">Number Of Record</h5>
                 <p class="card-text fs-4" id="recordCount">0</p>
               </div>
             </div>
@@ -193,5 +200,4 @@
     }
   </script>
 </body>
-
 </html>

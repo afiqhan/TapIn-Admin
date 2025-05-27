@@ -159,3 +159,20 @@ body {
   }
 }
 
+@media (max-width: 600px) {
+  .login-container {
+    margin: 50px 10px;
+    padding: 20px;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+}
+  .custom-navbar {
+    background-color: #123456; /* Ganti dengan warna pilihan anda */
+  }
+
+.custom-sidebar {
+    background-color: #123456; 
+  }
